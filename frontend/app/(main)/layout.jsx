@@ -1,9 +1,5 @@
-import React from 'react'
+const MainLayout = ({ children }) => {
+  return <div className="pt-10">{children}</div>;
+};
 
-const layout = () => {
-  return (
-    <div>layout</div>
-  )
-}
-
-export default layout
+export default MainLayout;

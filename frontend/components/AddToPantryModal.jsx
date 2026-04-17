@@ -27,6 +27,15 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [scannedIngredients, setScannedIngredients] = useState([]);
   const [manualItem, setManualItem] = useState({ name: "", quantity: "" });
+
+   // Reset modal state
+  const handleClose = () => {
+    setActiveTab("scan");
+    setSelectedImage(null);
+    setScannedIngredients([]);
+    setManualItem({ name: "", quantity: "" });
+    onClose();
+  };
   return (
    
     <Dialog open={isOpen} onOpenChange={handleClose}>

@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ImageUploader from "@/components/ImageUploader";
+ import ImageUploader from "@/components/ImageUploader";
 import useFetch from "@/hooks/use-fetch";
 import {
   scanPantryImage,
@@ -28,6 +28,62 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
   const [scannedIngredients, setScannedIngredients] = useState([]);
   const [manualItem, setManualItem] = useState({ name: "", quantity: "" });
 
+  // Scan image
+  const {
+    loading: scanning,
+    data: scanData,
+    fn: scanImage,
+  } = useFetch(scanPantryImage);
+
+  // Save scanned items
+  const {
+    loading: saving,
+    data: saveData,
+    fn: saveScannedItems,
+  } = useFetch(saveToPantry);
+
+  // Add manual item
+  const {
+    loading: adding,
+    data: addData,
+    fn: addManualItem,
+  } = useFetch(addPantryItemManually);
+ // Handle image selection
+  const handleImageSelect = (file) => {
+    setSelectedImage(file);
+    setScannedIngredients([]); // Reset when new image selected
+  };
+
+  // Scan image
+  const handleScan = async () => {
+    if (!selectedImage) return;
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+    await scanImage(formData);
+  };
+
+  // Update scanned ingredients when scan completes
+  useEffect(() => {
+    if (scanData?.success && scanData?.ingredients) {
+      setScannedIngredients(scanData.ingredients);
+      toast.success(`Found ${scanData.ingredients.length} ingredients!`);
+    }
+  }, [scanData]);
+  console.log(scanData)
+
+  // Handle save scanned items
+  const handleSaveScanned = async () => {
+    if (scannedIngredients.length === 0) {
+      toast.error("No ingredients to save");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("ingredients", JSON.stringify(scannedIngredients));
+    await saveScannedItems(formData);
+  };
+
+
    // Reset modal state
   const handleClose = () => {
     setActiveTab("scan");
@@ -36,6 +92,43 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
     setManualItem({ name: "", quantity: "" });
     onClose();
   };
+   // Handle save success
+  useEffect(() => {
+    if (saveData?.success) {
+      toast.success(saveData.message);
+      handleClose();
+      if (onSuccess) onSuccess();
+    }
+  }, [saveData]);
+
+  // Handle manual add
+  const handleAddManual = async (e) => {
+    e.preventDefault();
+    if (!manualItem.name.trim() || !manualItem.quantity.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", manualItem.name);
+    formData.append("quantity", manualItem.quantity);
+    await addManualItem(formData);
+  };
+  // Handle manual add success
+  useEffect(() => {
+    if (addData?.success) {
+      toast.success("Item added to pantry!");
+      setManualItem({ name: "", quantity: "" });
+      handleClose();
+      if (onSuccess) onSuccess();
+    }
+  }, [addData]);
+
+  // Remove scanned ingredient
+  const removeIngredient = (index) => {
+    setScannedIngredients(scannedIngredients.filter((_, i) => i !== index));
+  };
+
   return (
    
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -66,14 +159,15 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
             {scannedIngredients.length === 0 ? (
               // Step 1: Upload & Scan
               <div className="space-y-4">
-                <ImageUploader
+               <ImageUploader
                   onImageSelect={handleImageSelect}
                   loading={scanning}
-                />
+                /> 
 
                 {selectedImage && !scanning && (
                   <Button
                     onClick={handleScan}
+                    variant="primary"
                     className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 text-lg"
                     disabled={scanning}
                   >
@@ -189,7 +283,7 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
                   }
                   placeholder="e.g., Chicken breast"
                   className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  disabled={adding}
+                   disabled={adding}
                 />
               </div>
 
@@ -211,10 +305,10 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
 
               <Button
                 type="submit"
-                disabled={adding}
+                 disabled={adding}
                 className="flex-1 bg-orange-600 hover:bg-orange-700 text-white h-12 w-full"
               >
-                {adding ? (
+                 {adding ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     Adding...
@@ -224,7 +318,7 @@ const AddToPantryModal = ({ isOpen, onClose, onSuccess }) => {
                     <Plus className="w-5 h-5 mr-2" />
                     Add Item
                   </>
-                )}
+                )} 
               </Button>
             </form>
           </TabsContent>

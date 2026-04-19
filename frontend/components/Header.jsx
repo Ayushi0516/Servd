@@ -1,17 +1,21 @@
-import React from 'react'
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Cookie, Refrigerator, Sparkles } from "lucide-react";
+import { Cookie, Refrigerator, SignalMediumIcon, Sparkles } from "lucide-react";
 
-const Header =async() => {
-    const user=null;
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Button } from "./ui/button";
+import UserDropdown from "./UserDropdown";
+
+const Header = async () => {
+  const user = null;
 
   return (
-     <header className="fixed top-0 w-full border-b border-stone-200 bg-stone-50/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-stone-50/60">
-         <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-               {/* Logo */}
+    <header className="fixed top-0 w-full border-b border-stone-200 bg-stone-50/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-stone-50/60">
+      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo */}
         <Link
-          href=  {user ? "/dashboard" : "/"}
+          href={user ? "/dashboard" : "/"}
           className="flex items-center gap-2 group"
         >
           <Image
@@ -22,7 +26,7 @@ const Header =async() => {
             className="w-16"
           />
         </Link>
-         {/* Navigation Links */}
+        {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-stone-600">
           <Link
             href="/recipes"
@@ -39,14 +43,31 @@ const Header =async() => {
             My Pantry
           </Link>
         </div>
-  {/* Action Buttons */}
+        {/* Action Buttons */}
         <div className="flex items-center space-x-4">
+          <Show when="signed-in">
+            <UserDropdown />
+          </Show>
 
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <Button
+                variant="ghost"
+                className="text-stone-600 hover:text-orange-600 hover:bg-orange-50 font-medium"
+              >
+                Sign In
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button variant="primary" className="rounded-full px-6">
+                Get Started
+              </Button>
+            </SignUpButton>
+          </Show>
         </div>
+      </nav>
+    </header>
+  );
+};
 
-         </nav>
-     </header>
-  )
-}
-
-export default Header
+export default Header;

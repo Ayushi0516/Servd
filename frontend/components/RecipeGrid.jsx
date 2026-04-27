@@ -10,7 +10,7 @@ const RecipeGrid = ({
   fetchAction, // server action to fetch meals
   backLink = "/dashboard",
 }) => {
-     const { loading, data, fn: fetchMeals } = useFetch(fetchAction);
+      const { loading, data, fn: fetchMeals } = useFetch(fetchAction);
 
   useEffect(() => {
     if (value) {
@@ -20,10 +20,10 @@ const RecipeGrid = ({
     }
   }, [value]);
 
-  const meals = data?.meals || [];
-  const displayName = value?.replace(/-/g, " "); // Convert "saudi-arabian" to "saudi arabian"
+   const meals = data?.meals || [];
+   const displayName = value?.replace(/-/g, " "); // Convert "saudi-arabian" to "saudi arabian"
 
-
+// console.log(meals)
   return (
     <div className="min-h-screen bg-stone-50 pt-14 pb-16 px-4">
       <div className="container mx-auto max-w-7xl">
@@ -61,16 +61,16 @@ const RecipeGrid = ({
         )}
 
         {/* Meals Grid - Using RecipeCard */}
-        {!loading && meals.length > 0 && (
+         {!loading && meals.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {meals.map((meal) => (
               <RecipeCard key={meal.idMeal} recipe={meal} variant="grid" />
             ))}
           </div>
-        )}
+        )} 
 
         {/* Empty State */}
-        {!loading && meals.length === 0 && (
+         {!loading && meals.length === 0 && (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🍽️</div>
             <h3 className="text-2xl font-bold text-stone-900 mb-2">
@@ -87,7 +87,7 @@ const RecipeGrid = ({
               </span>
             </Link>
           </div>
-        )}
+        )} 
       </div>
     </div>
   );

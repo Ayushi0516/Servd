@@ -1,6 +1,6 @@
 import React from "react";
 import { Check } from "lucide-react";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Show, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { CheckoutButton } from "@clerk/nextjs/experimental";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,8 @@ import Link from "next/link";
 
 export default function PricingSection({ subscriptionTier = "free" }) {
   return (
-     <div className="max-w-6xl mx-auto">
+    // 6
+     <div className="max-w-4xl mx-auto">
           <div className="mb-16">
         <h2 className="text-5xl md:text-6xl font-bold mb-4">Simple Pricing</h2>
         <p className="text-xl text-stone-600 font-light">
@@ -102,8 +103,9 @@ export default function PricingSection({ subscriptionTier = "free" }) {
           </CardContent>
            <CardFooter>
             {/* <SignedIn> */}
+             <Show when="signed-in">
               <CheckoutButton
-                planId="cplan_37y5uChZ9uYauQyTlDkXDh997ht"
+                planId="cplan_3CiAnKBLngGXFIjg7Ba9SVQjVMS"
                 planPeriod="month"
                 newSubscriptionRedirectUrl="/dashboard"
                 checkoutProps={{
@@ -123,13 +125,17 @@ export default function PricingSection({ subscriptionTier = "free" }) {
                   {subscriptionTier === "pro" ? "Subscribed" : "Subscribe Now"}
                 </Button>
               </CheckoutButton>
+              </Show>
             {/* </SignedIn> */}
             {/* <SignedOut> */}
+            <Show when="signed-out">
+
               <SignInButton mode="modal">
                 <Button variant="primary" className="w-full">
                   Login to Subscribe
                 </Button>
               </SignInButton>
+              </Show>
             {/* </SignedOut> */}
           </CardFooter>
         </Card>

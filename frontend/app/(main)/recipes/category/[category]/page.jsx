@@ -8,13 +8,17 @@ import RecipeGrid from "@/components/RecipeGrid";
 export default function CategoryRecipesPage() {
   const params = useParams();
   const category = params.category;
-
+console.log("catrgory")
   return (
-    <RecipeGrid
+    <>
+     <RecipeGrid
       type="category"
       value={category}
       fetchAction={getMealsByCategory}
       backLink="/dashboard"
     />
+    
+    
+    </>
   );
 }

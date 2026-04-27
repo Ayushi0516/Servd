@@ -1,10 +1,21 @@
-import arcjet, { tokenBucket } from "@arcjet/next";
+import arcjet, { detectBot, shield, tokenBucket } from "@arcjet/next";
 
 
 
 export const aj = arcjet({
  key: process.env.ARCJET_KEY,
- rules:[],
+ rules:[
+   // Shield WAF - protect against common attacks
+    shield({
+      mode: "LIVE", // Use "DRY_RUN" during development to test
+    }),
+
+    // Bot protection - allow search engines only
+    detectBot({
+      mode: "LIVE",
+      allow: ["CATEGORY:SEARCH_ENGINE"],
+    }),
+ ],
 })
 
 export const freePantryScans= aj.withRule(

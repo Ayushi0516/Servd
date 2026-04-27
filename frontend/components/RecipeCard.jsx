@@ -41,21 +41,21 @@ const RecipeCard = ({ recipe, variant = "default" }) => {
         showImage: !!recipe.imageUrl, // Show if image exists
       };
     }
- // For Strapi recipes (saved recipes, search results)
-    // if (recipe) {
-    //   return {
-    //     title: recipe.title,
-    //     description: recipe.description,
-    //     category: recipe.category,
-    //     cuisine: recipe.cuisine,
-    //     prepTime: recipe.prepTime,
-    //     cookTime: recipe.cookTime,
-    //     servings: recipe.servings,
-    //     image: recipe.imageUrl,
-    //     href: `/recipe?cook=${encodeURIComponent(recipe.title)}`,
-    //     showImage: !!recipe.imageUrl,
-    //   };
-    // }
+//  For Strapi recipes (saved recipes, search results)
+    if (recipe) {
+      return {
+        title: recipe.title,
+        description: recipe.description,
+        category: recipe.category,
+        cuisine: recipe.cuisine,
+        prepTime: recipe.prepTime,
+        cookTime: recipe.cookTime,
+        servings: recipe.servings,
+        image: recipe.imageUrl,
+        href: `/recipe?cook=${encodeURIComponent(recipe.title)}`,
+        showImage: !!recipe.imageUrl,
+      };
+    }
 
     return {};
 

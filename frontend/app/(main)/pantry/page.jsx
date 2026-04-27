@@ -16,16 +16,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import useFetch from "@/hooks/use-fetch";
-// import {
-//   getPantryItems,
-//   deletePantryItem,
-//   updatePantryItem,
-// } from "@/actions/pantry.actions";
+import {
+  getPantryItems,
+  deletePantryItem,
+  updatePantryItem,
+} from "@/actions/pantry.actions";
 import { toast } from "sonner";
-import { deletePantryItem, getPantryItems, updatePantryItem } from "@/actions/pantry.actions";
+// import { deletePantryItem, getPantryItems, updatePantryItem } from "@/actions/pantry.actions";
 import AddToPantryModal from "@/components/AddToPantryModal";
+import PricingModal from "@/components/PricingModal";
 // import AddToPantryModal from "@/components/AddToPantryModal";
-// import PricingModal from "@/components/PricingModal";
+
 
 const PantryPage = () => {
   const [items, setItems] = useState([]);
@@ -168,11 +169,11 @@ const PantryPage = () => {
                   </>
                 ) : (
                   // pricingModal change to div
-                  <div>
+                  <PricingModal>
                     <span className="text-stone-500 cursor-pointer">
                       Upgrade to Pro for unlimited Pantry scans
                     </span>
-                  </div>
+                  </PricingModal>
                 )}
               </div>
             </div>

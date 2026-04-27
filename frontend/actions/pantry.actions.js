@@ -2,12 +2,18 @@
 
 
 import { freePantryScans, proTierLimit } from "@/lib/arcjet";
+import { checkUser } from "@/lib/checkUser";
 import { request } from "@arcjet/next";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // strapi api add krna h 
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 const GEMINI_API_KEY= process.env.GEMINI_API_KEY;
+
 const genAI= new GoogleGenerativeAI(GEMINI_API_KEY);
+
 export async function scanPantryImage(formData){
     try{
 const user = await checkUser();
@@ -125,34 +131,34 @@ export async function saveToPantry(formData){
       throw new Error("No ingredients to save");
     }
      // Create pantry items in Strapi
-    // const savedItems = [];
-    // for (const ingredient of ingredients) {
-    //   const response = await fetch(`${STRAPI_URL}/api/pantry-items`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-    //     },
-    //     body: JSON.stringify({
-    //       data: {
-    //         name: ingredient.name,
-    //         quantity: ingredient.quantity,
-    //         imageUrl: "",
-    //         owner: user.id,
-    //       },
-    //     }),
-    //   });
+    const savedItems = [];
+    for (const ingredient of ingredients) {
+      const response = await fetch(`${STRAPI_URL}/api/pantry-items`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        body: JSON.stringify({
+          data: {
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            imageUrl: "",
+            owner: user.id,
+          },
+        }),
+      });
 
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     savedItems.push(data.data);
-    //   }
-    // }
-    // return {
-    //   success: true,
-    //   savedItems,
-    //   message: `Saved ${savedItems.length} items to your pantry!`,
-    // };
+      if (response.ok) {
+        const data = await response.json();
+        savedItems.push(data.data);
+      }
+    }
+    return {
+      success: true,
+      savedItems,
+      message: `Saved ${savedItems.length} items to your pantry!`,
+    };
   } catch (error) {
     console.error("Error saving to pantry:", error);
     throw new Error(error.message || "Failed to save items");
@@ -173,29 +179,29 @@ export async function addPantryItemManually(formData) {
       throw new Error("Name and quantity are required");
     }
 
-    // const response = await fetch(`${STRAPI_URL}/api/pantry-items`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-    //   },
-    //   body: JSON.stringify({
-    //     data: {
-    //       name: name.trim(),
-    //       quantity: quantity.trim(),
-    //       imageUrl: "",
-    //       owner: user.id,
-    //     },
-    //   }),
-    // });
+    const response = await fetch(`${STRAPI_URL}/api/pantry-items`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        data: {
+          name: name.trim(),
+          quantity: quantity.trim(),
+          imageUrl: "",
+          owner: user.id,
+        },
+      }),
+    });
 
-    // if (!response.ok) {
-    //   const errorText = await response.text();
-    //   console.error("Failed to add item:", errorText);
-    //   throw new Error("Failed to add item to pantry");
-    // }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Failed to add item:", errorText);
+      throw new Error("Failed to add item to pantry");
+    }
 
-    // const data = await response.json();
+    const data = await response.json();
 
     return {
       success: true,
@@ -216,23 +222,23 @@ export async function getPantryItems() {
       throw new Error("User not authenticated");
     }
 
-    // const response = await fetch(
-    //   `${STRAPI_URL}/api/pantry-items?filters[owner][id][$eq]=${user.id}&sort=createdAt:desc`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-    //     },
-    //     cache: "no-store",
-    //   }
-    // );
+    const response = await fetch(
+      `${STRAPI_URL}/api/pantry-items?filters[owner][id][$eq]=${user.id}&sort=createdAt:desc`,
+      {
+        headers: {
+          Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+        },
+        cache: "no-store",
+      }
+    );
 
-    // if (!response.ok) {
-    //   throw new Error("Failed to fetch pantry items");
-    // }
+    if (!response.ok) {
+      throw new Error("Failed to fetch pantry items");
+    }
 
-    // const data = await response.json();
+    const data = await response.json();
 
-    // const isPro = user.subscriptionTier === "pro";
+    const isPro = user.subscriptionTier === "pro";
 
     return {
       success: true,
@@ -253,23 +259,23 @@ export async function deletePantryItem(formData) {
       throw new Error("User not authenticated");
     }
 
-    // const itemId = formData.get("itemId");
+    const itemId = formData.get("itemId");
 
-    // const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
-    //   method: "DELETE",
-    //   headers: {
-    //     Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-    //   },
-    // });
+    const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+    });
 
-    // if (!response.ok) {
-    //   throw new Error("Failed to delete item");
-    // }
+    if (!response.ok) {
+      throw new Error("Failed to delete item");
+    }
 
-    // return {
-    //   success: true,
-    //   message: "Item removed from pantry",
-    // };
+    return {
+      success: true,
+      message: "Item removed from pantry",
+    };
   } catch (error) {
     console.error("Error deleting item:", error);
     throw new Error(error.message || "Failed to delete item");
@@ -284,35 +290,35 @@ export async function updatePantryItem(formData) {
       throw new Error("User not authenticated");
     }
 
-    // const itemId = formData.get("itemId");
-    // const name = formData.get("name");
-    // const quantity = formData.get("quantity");
+    const itemId = formData.get("itemId");
+    const name = formData.get("name");
+    const quantity = formData.get("quantity");
 
-    // const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${STRAPI_API_TOKEN}`,
-    //   },
-    //   body: JSON.stringify({
-    //     data: {
-    //       name,
-    //       quantity,
-    //     },
-    //   }),
-    // });
+    const response = await fetch(`${STRAPI_URL}/api/pantry-items/${itemId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        data: {
+          name,
+          quantity,
+        },
+      }),
+    });
 
-    // if (!response.ok) {
-    //   throw new Error("Failed to update item");
-    // }
+    if (!response.ok) {
+      throw new Error("Failed to update item");
+    }
 
-    // const data = await response.json();
+    const data = await response.json();
 
-    // return {
-    //   success: true,
-    //   item: data.data,
-    //   message: "Item updated successfully",
-    // };
+    return {
+      success: true,
+      item: data.data,
+      message: "Item updated successfully",
+    };
   } catch (error) {
     console.error("Error updating item:", error);
     throw new Error(error.message || "Failed to update item");

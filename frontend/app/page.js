@@ -4,14 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Star, Flame, Clock, Users } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-// import { auth } from "@clerk/nextjs/server";
+ import { auth } from "@clerk/nextjs/server";
  import { SITE_STATS, FEATURES, HOW_IT_WORKS_STEPS } from "@/lib/data";
-// import PricingSection from "@/components/PricingSection";
+ import PricingSection from "@/components/PricingSection";
 // import { SignUpButton } from "@clerk/nextjs";
 
 export default async function Home() {
-  // const { has } = await auth();
-  // const subscriptionTier = has({ plan: "pro" }) ? "pro" : "free";
+   const { has } = await auth();
+   const subscriptionTier = has({ plan: "pro" }) ? "pro" : "free";
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
@@ -194,7 +194,7 @@ export default async function Home() {
 
       {/* Pricing - Now Using Component */}
       <section className="py-24 px-4">
-        {/* <PricingSection subscriptionTier={subscriptionTier} /> */}
+        <PricingSection subscriptionTier={subscriptionTier} />
       </section>
     </div>
   );

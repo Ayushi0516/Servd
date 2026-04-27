@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import useFetch from "@/hooks/use-fetch";
 import { getRecipesByPantryIngredients } from "@/actions/recipe.actions";
 import RecipeCard from "@/components/RecipeCard";
+import PricingModal from "@/components/PricingModal";
 // import PricingModal from "@/components/PricingModal";
 
 const PantryRecipesPage = () => {
@@ -200,12 +201,12 @@ const PantryRecipesPage = () => {
               Upgrade to Pro for unlimited suggestions!
             </p>
             {/* add pricingmodel inplace od div */}
-            <div> 
+            <PricingModal> 
               <Button className="bg-orange-600 hover:bg-orange-700 text-white gap-2">
                 <Sparkles className="w-4 h-4" />
                 Upgrade to Pro
               </Button>
-            </div>  
+            </PricingModal>  
             {/* pp model */}
           </div>
         )}

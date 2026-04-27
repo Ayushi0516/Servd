@@ -20,8 +20,9 @@ export default function PricingModal({ subscriptionTier = "free", children }) {
   const canOpen = subscriptionTier === "free";
 
   return (
-    <Dialog open={isOpen} onOpenChange={canOpen ? setIsOpen : undefined}>
-      <DialogTrigger asChild disabled={!canOpen}>
+    <Dialog open={isOpen} onOpenChange={canOpen ? setIsOpen : undefined} disabled={!canOpen}>
+      {/* asChild disabled={!canOpen} */}
+      <DialogTrigger >
         {children}
       </DialogTrigger>
 

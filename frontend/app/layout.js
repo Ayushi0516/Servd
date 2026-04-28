@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
                 /> 
               </div>
               <p className="text-stone-500 text-sm">
-                Made by Ayushi Gupta
+                Made by Ayushi Gupta 😊
               </p>
             </div>
           </footer>
